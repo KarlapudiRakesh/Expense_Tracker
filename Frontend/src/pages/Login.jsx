@@ -7,6 +7,7 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,14 +16,21 @@ function Login() {
       return toast.error("Please enter all fields");
     }
 
+    const confirm = window.confirm("Are you sure you want to login?");
+    if (!confirm) return;
+
+    setLoading(true);
+
     try {
       const res = await publicRequest.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
-      toast.success("Login successful");
+      toast.success("Login successful!");
       navigate("/");
     } catch (err) {
-      console.error(err);
-      toast.error("Invalid credentials");
+      console.error("Login error:", err.response?.data || err.message);
+      toast.error("Login failed. Please check credentials or try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,9 +57,12 @@ function Login() {
         />
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className={`w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 ${
+            loading ? "opacity-60 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
         <p className="mt-4 text-center">
           New user?{" "}
