@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://expense-tracker-backend-url.onrender.com";
+const BASE_URL = "https://expense-tracker-backend-url.onrender.com/api";
 
 const token = localStorage.getItem("token");
 
